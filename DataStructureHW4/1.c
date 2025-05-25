@@ -15,10 +15,8 @@ char* Stable_Data[5] = { "YES","YES","NO","NO","NO" };
 
 void mk_n_rand(void);
 void mk_c_rand(void);
-void setting_arr(element x[], element y[]) {
-	for (int i = 0; i < N; i++) x[i] = y[i];
-}
 void Bubble_Sort(element arr[]);
+void setting_arr(element x[], element y[]);
 void Bubble_Sort_Func(element arr[]);
 void Insert_Sort(element arr[]);
 void Insert_Sort_Func(element arr[]);
@@ -109,4 +107,7 @@ void mk_n_rand(void) {
 void mk_c_rand(void) {
 
 	return;
+}
+void setting_arr(element x[], element y[]) {
+	for (int i = 0; i < N; i++) x[i] = y[i];
 }
