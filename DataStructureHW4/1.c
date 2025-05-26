@@ -3,7 +3,7 @@
 #include<stdlib.h>
 #include<time.h>
 #include<string.h>
-#define N 5
+#define N 10
 //#define element char*
 #define swap(x,y,t) ((t)=(x),(x)=(y),(y)=(t))
 typedef struct {
@@ -13,6 +13,8 @@ typedef struct {
 element randarr[N];
 element sortarr[N];
 element SWAPTMP;
+
+element tmp[N];
 double Time_Data[5];
 long long Compare_Data[5];
 long long Swap_Data[5];
@@ -32,7 +34,7 @@ void Quick_Sort_Func(element arr[], int l, int r);
 void Merge_Sort(element arr[]);
 void Merge_Sort_Func(element arr[], int l, int r);
 void Heap_Sort(element arr[]);
-void Heap_Sort_Func(element arr[], int l, int r);
+void Heap_Sort_Func(element arr[]);
 
 int main(void) {
 	srand((unsigned)time(NULL));
@@ -46,6 +48,8 @@ int main(void) {
 	Quick_Sort(sortarr);
 	setting_arr(sortarr, randarr);
 	Merge_Sort(sortarr);
+	setting_arr(sortarr, randarr);
+	Heap_Sort(sortarr);
 
 
 	printf("====Sorting Result Summary ===\n");
@@ -62,7 +66,63 @@ int main(void) {
 	}
 }
 
+void Heap_Sort(element arr[]){
+	FILE* fp = fopen("heap_sort.out", "w");
+	printf("=> Starting - Heap Sort\n");
+	clock_t start, finish;
+	double duraion;
+	start = clock();
 
+	Heap_Sort_Func(arr);
+	for (int i = 0; i < N; i++) {
+		fprintf(fp, "%s ", arr[i].str);
+	}
+
+	finish = clock();
+	duraion = (double)(finish - start) / CLOCKS_PER_SEC;
+	printf("=> Finished\n");
+	Time_Data[4] = duraion;
+	fclose(fp);
+	printf("=> Created - heap_sort.out\n");
+	Stable_Data[4] = check_stable(arr);
+}
+void Heap_Sort_Func(element arr[]) {
+
+	element heap[N + 1];
+	int ind = 1;
+
+	// Heap insert (Min Heap)
+	for (int i = 0; i < N; i++) {
+		heap[ind] = arr[i];
+		for (int j = ind; j / 2 > 0; j /= 2) {
+			if (strcmp(heap[j].str, heap[j / 2].str) < 0)
+				swap(heap[j], heap[j / 2], SWAPTMP);
+			else break;
+		}
+		ind++;
+	}
+
+	// Heap sort (pop min to arr)
+	for (int i = 0; i < N; i++) {
+		arr[i] = heap[1];
+		swap(heap[1], heap[ind - 1], SWAPTMP);
+		ind--;
+
+		int j = 1;
+		while (j * 2 < ind) {
+			int child = j * 2;
+			if (child + 1 < ind && strcmp(heap[child + 1].str, heap[child].str) < 0)
+				child++;
+
+			if (strcmp(heap[j].str, heap[child].str) > 0) {
+				swap(heap[j], heap[child], SWAPTMP);
+				j = child;
+			}
+			else break;
+		}
+	}
+
+}
 void Merge_Sort_Func(element arr[], int l, int r){
 	if (l >= r)return;
 
@@ -76,7 +136,6 @@ void Merge_Sort_Func(element arr[], int l, int r){
 	Merge_Sort_Func(arr, mid+1, r);
 
 
-	element tmp[N];
 	while (lower <= mid && upper <= r) {
 		if (strcmp(arr[lower].str, arr[upper].str) != 1) {
 			tmp[ind] = arr[lower];

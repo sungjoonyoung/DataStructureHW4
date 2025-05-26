@@ -131,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="bubble_sort.out" />
+    <None Include="heap_sort.out" />
     <None Include="insert_sort.out" />
     <None Include="merge_sort.out" />
     <None Include="quick_sort.out" />
