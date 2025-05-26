@@ -17,12 +17,13 @@ char* Stable_Data[5] = { "YES","YES","NO","NO","NO" };
 
 void mk_n_rand(void);
 void mk_c_rand(void);
-void Bubble_Sort(element arr[]);
 void setting_arr(element x[], element y[]);
+void Bubble_Sort(element arr[]);
 void Bubble_Sort_Func(element arr[]);
 void Insert_Sort(element arr[]);
 void Insert_Sort_Func(element arr[]);
-
+void Quick_Sort(element arr[]);
+void Quick_Sort_Func(element arr[]);
 
 int main(void) {
 	srand((unsigned)time(NULL));
@@ -32,6 +33,8 @@ int main(void) {
 	Bubble_Sort(sortarr);
 	setting_arr(sortarr, randarr);
 	Insert_Sort(sortarr);
+	setting_arr(sortarr, randarr);
+	Quick_Sort(sortarr);
 
 
 	printf("====Sorting Result Summary ===\n");
@@ -47,7 +50,28 @@ int main(void) {
 }
 
 
+void Quick_Sort_Func(element arr[]) {
+	return;
+}
+void Quick_Sort(element arr[]) {
+	FILE* fp = fopen("quick_sort.out", "w");
+	printf("=> Starting - Quick Sort\n");
+	clock_t start, finish;
+	double duraion;
+	start = clock();
 
+	Insert_Sort_Func(arr);
+	for (int i = 0; i < N; i++) {
+		fprintf(fp, "%s ", arr[i]);
+	}
+
+	finish = clock();
+	duraion = (double)(finish - start) / CLOCKS_PER_SEC;
+	printf("=> Finished\n");
+	Time_Data[1] = duraion;
+	fclose(fp);
+	printf("=> Created - quick_sort.out\n");
+}
 void Insert_Sort_Func(element arr[]) {
 	for (int i = 1; i < N; i++) {
 		element key = arr[i];
