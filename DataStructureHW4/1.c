@@ -1,12 +1,14 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include<stdio.h>
 #include<stdlib.h>
 #include<time.h>
-#define N 30
-#define element int
+#include<string.h>
+#define N 5
+#define element char*
 #define swap(x,y,t) ((t)=(x),(x)=(y),(y)=(t))
-element randarr[N];
+char* randarr[N];
 element sortarr[N];
-element tmp;
+element SWAPTMP;
 double Time_Data[5];
 long long Compare_Data[5];
 long long Swap_Data[5];
@@ -24,10 +26,13 @@ void Insert_Sort_Func(element arr[]);
 
 int main(void) {
 	srand((unsigned)time(NULL));
-	mk_n_rand();
+	mk_c_rand();
 	printf("Number of Instances: %d\n", N);
 	setting_arr(sortarr, randarr);
 	Bubble_Sort(sortarr);
+	setting_arr(sortarr, randarr);
+	Insert_Sort(sortarr);
+
 
 	printf("====Sorting Result Summary ===\n");
 	printf("Algorithm    | Tims(s)  | Compare            | Swap               | Stable\n");
@@ -43,15 +48,20 @@ int main(void) {
 
 
 
-void Bubble_Sort_Func(element arr[]) {
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N-i-1; j++) {
-			Compare_Data[0]++;
-			if (arr[j] > arr[j + 1]) {
-				swap(arr[j], arr[j + 1], tmp);
-				Swap_Data[0]++;
+void Insert_Sort_Func(element arr[]) {
+	for (int i = 1; i < N; i++) {
+		element key = arr[i];
+		int j = i-1;
+		for (; j >= 0;j--) {
+			Compare_Data[1]++;
+			if (strcmp(arr[j], key) == 1) {
+				arr[j + 1] = arr[j];
+				Swap_Data[1]++;
 			}
+			else break;
 		}
+		arr[j + 1] = key;
+		Swap_Data[1]++;
 	}
 }
 void Insert_Sort(element arr[]){
@@ -63,7 +73,7 @@ void Insert_Sort(element arr[]){
 
 	Insert_Sort_Func(arr);
 	for (int i = 0; i < N; i++) {
-		fprintf(fp, "%d ", arr[i]);
+		fprintf(fp, "%s ", arr[i]);
 	}
 
 	finish = clock();
@@ -73,9 +83,15 @@ void Insert_Sort(element arr[]){
 	fclose(fp);
 	printf("=> Created - insert_sort.out\n");
 }
-void Insert_Sort_Func(element arr[]){
-	for (int i = 1; i < N; i++) {
-		element key = arr[i];
+void Bubble_Sort_Func(element arr[]) {
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N - i - 1; j++) {
+			Compare_Data[0]++;
+			if (strcmp(arr[j],arr[j+1])==1) {
+				swap(arr[j], arr[j + 1], SWAPTMP);
+				Swap_Data[0]++;
+			}
+		}
 	}
 }
 void Bubble_Sort(element arr[]) {
@@ -87,7 +103,7 @@ void Bubble_Sort(element arr[]) {
 
 	Bubble_Sort_Func(arr);
 	for (int i = 0; i < N; i++) {
-		fprintf(fp, "%d ", arr[i]);
+		fprintf(fp, "%s ", arr[i]);
 		//printf("%d ", arr[i]);
 	}
 
@@ -100,14 +116,22 @@ void Bubble_Sort(element arr[]) {
 }
 void mk_n_rand(void) {
 	for (int i = 0; i < N; i++) {
-		randarr[i] = rand() % 1'000'000 + 1;
+		//randarr[i] = rand() % 1'000'000 + 1;
 	}
 	return;
 }
 void mk_c_rand(void) {
 	for (int i = 0; i < N; i++) {
 		int l = rand() % 20 + 1;
-		for(int j=0;j<l;)
+		randarr[i] = malloc(sizeof(char) * (l + 1));
+
+		int j = 0;
+		char tmp[100];
+		for (; j < l; j++) {
+			tmp[j] = rand() % ('z' - 'a'+1) + 'a';
+		}
+		tmp[j] = '\0';
+		strcpy(randarr[i],tmp);
 	}
 	return;
 }
