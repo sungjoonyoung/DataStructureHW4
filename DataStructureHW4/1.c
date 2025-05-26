@@ -131,7 +131,7 @@ void Merge_Sort_Func(element arr[], int l, int r){
 
 
 	while (lower <= mid && upper <= r) {
-		if (strcmp(arr[lower].str, arr[upper].str) != 1) {
+		if (strcmp(arr[lower].str, arr[upper].str) <= 0) {
 			tmp[ind] = arr[lower];
 			lower++;
 		}
@@ -181,9 +181,9 @@ void Quick_Sort_Func(element arr[], int l, int r) {
 	upper = r + 1;
 	do {
 		lower++;
-		while ((lower <= r) && (strcmp(arr[lower].str, arr[l].str) == -1))lower++;
+		while ((lower <= r) && (strcmp(arr[lower].str, arr[l].str) < 0))lower++;
 		upper--;
-		while ((upper >= l + 1) && (strcmp(arr[upper].str, arr[l].str) != -1))upper--;
+		while ((upper >= l + 1) && (strcmp(arr[upper].str, arr[l].str) >=0))upper--;
 		if (lower < upper) swap(arr[lower], arr[upper], SWAPTMP);
 	} while (lower < upper);
 	swap(arr[upper], arr[l], SWAPTMP);
@@ -217,7 +217,7 @@ void Insert_Sort_Func(element arr[]) {
 		int j = i-1;
 		for (; j >= 0;j--) {
 			Compare_Data[1]++;
-			if (strcmp(arr[j].str, key.str) == 1) {
+			if (strcmp(arr[j].str, key.str) >0) {
 				arr[j + 1] = arr[j];
 				Swap_Data[1]++;
 			}
@@ -251,7 +251,7 @@ void Bubble_Sort_Func(element arr[]) {
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N - i - 1; j++) {
 			Compare_Data[0]++;
-			if (strcmp(arr[j].str,arr[j+1].str)==1) {
+			if (strcmp(arr[j].str,arr[j+1].str)>0) {
 				swap(arr[j], arr[j + 1], SWAPTMP);
 				Swap_Data[0]++;
 			}
@@ -304,7 +304,7 @@ void mk_c_rand(void) {
 int check_stable(element arr[])
 {
 	for (int i = 0; i < N-1; i++) {
-		if (strcmp(arr[i].str, arr[i + 1].str) == 1) {
+		if (strcmp(arr[i].str, arr[i + 1].str) == 0) {
 			if (arr[i].ind > arr[i + 1].ind)return 0;
 		}
 	}
