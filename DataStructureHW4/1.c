@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<time.h>
-#define N 20
+#define N 50
 #define element int
 #define swap(x,y,t) ((t)=(x),(x)=(y),(y)=(t))
 element randarr[N];
