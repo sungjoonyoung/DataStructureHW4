@@ -4,26 +4,35 @@
 #include<time.h>
 #include<string.h>
 #define N 5
-#define element char*
+//#define element char*
 #define swap(x,y,t) ((t)=(x),(x)=(y),(y)=(t))
-char* randarr[N];
+typedef struct {
+	char* str;
+	int ind;
+}element;
+element randarr[N];
 element sortarr[N];
 element SWAPTMP;
 double Time_Data[5];
 long long Compare_Data[5];
 long long Swap_Data[5];
 char* Name_Data[5] = { "Buuble Sort","Insert Sort","Quick Sort" ,"Merge Sort","Heap Sort" };
-char* Stable_Data[5] = { "YES","YES","NO","NO","NO" };
+int Stable_Data[5];
 
 void mk_n_rand(void);
 void mk_c_rand(void);
+int check_stable(element arr[]);
 void setting_arr(element x[], element y[]);
 void Bubble_Sort(element arr[]);
 void Bubble_Sort_Func(element arr[]);
 void Insert_Sort(element arr[]);
 void Insert_Sort_Func(element arr[]);
 void Quick_Sort(element arr[]);
-void Quick_Sort_Func(element arr[]);
+void Quick_Sort_Func(element arr[], int l, int r);
+void Merge_Sort(element arr[]);
+void Merge_Sort_Func(element arr[], int l, int r);
+void Heap_Sort(element arr[]);
+void Heap_Sort_Func(element arr[], int l, int r);
 
 int main(void) {
 	srand((unsigned)time(NULL));
@@ -35,6 +44,8 @@ int main(void) {
 	Insert_Sort(sortarr);
 	setting_arr(sortarr, randarr);
 	Quick_Sort(sortarr);
+	setting_arr(sortarr, randarr);
+	Merge_Sort(sortarr);
 
 
 	printf("====Sorting Result Summary ===\n");
@@ -45,12 +56,86 @@ int main(void) {
 		printf("|%-10lf", Time_Data[i]);
 		printf("|%-20lld", Compare_Data[i]);
 		printf("|%-20lld", Swap_Data[i]);
-		printf("|%s\n", Stable_Data[i]);
+		if (Stable_Data[i])printf("|YES\n");
+		else printf("|NO\n");
+		//printf("|%s\n", Stable_Data[i]);
 	}
 }
 
 
-void Quick_Sort_Func(element arr[]) {
+void Merge_Sort_Func(element arr[], int l, int r){
+	if (l >= r)return;
+
+
+	int ind = 0;
+	int lower = l;
+	int mid = (l + r) / 2;
+	int upper = mid + 1;
+
+	Merge_Sort_Func(arr, l, mid);
+	Merge_Sort_Func(arr, mid+1, r);
+
+
+	element tmp[N];
+	while (lower <= mid && upper <= r) {
+		if (strcmp(arr[lower].str, arr[upper].str) != 1) {
+			tmp[ind] = arr[lower];
+			lower++;
+		}
+		else {
+			tmp[ind] = arr[upper];
+			upper++;
+		}
+		ind++;
+	}
+	for (; lower <= mid; lower++) {
+		tmp[ind] = arr[lower];
+		ind++;
+	}
+	for (; upper <= r; upper++) {
+		tmp[ind] = arr[upper];
+		ind++;
+	}
+	for (ind = 0; l + ind <= r; ind++) {
+		arr[l + ind] = tmp[ind];
+	}
+
+}
+void Merge_Sort(element arr[]){
+	FILE* fp = fopen("merge_sort.out", "w");
+	printf("=> Starting - Merge Sort\n");
+	clock_t start, finish;
+	double duraion;
+	start = clock();
+
+	Merge_Sort_Func(arr, 0, N - 1);
+	for (int i = 0; i < N; i++) {
+		fprintf(fp, "%s ", arr[i].str);
+	}
+
+	finish = clock();
+	duraion = (double)(finish - start) / CLOCKS_PER_SEC;
+	printf("=> Finished\n");
+	Time_Data[3] = duraion;
+	fclose(fp);
+	printf("=> Created - merge_sort.out\n");
+	Stable_Data[3] = check_stable(arr);
+}
+void Quick_Sort_Func(element arr[], int l, int r) {
+	if (l >= r)return;
+	int lower, upper;
+	lower = l;
+	upper = r + 1;
+	do {
+		lower++;
+		while ((lower <= r) && (strcmp(arr[lower].str, arr[l].str) == -1))lower++;
+		upper--;
+		while ((upper >= l + 1) && (strcmp(arr[upper].str, arr[l].str) != -1))upper--;
+		if (lower < upper) swap(arr[lower], arr[upper], SWAPTMP);
+	} while (lower < upper);
+	swap(arr[upper], arr[l], SWAPTMP);
+	Quick_Sort_Func(arr, l, upper - 1);
+	Quick_Sort_Func(arr, upper + 1, r);
 	return;
 }
 void Quick_Sort(element arr[]) {
@@ -60,17 +145,18 @@ void Quick_Sort(element arr[]) {
 	double duraion;
 	start = clock();
 
-	Insert_Sort_Func(arr);
+	Quick_Sort_Func(arr, 0, N-1);
 	for (int i = 0; i < N; i++) {
-		fprintf(fp, "%s ", arr[i]);
+		fprintf(fp, "%s ", arr[i].str);
 	}
 
 	finish = clock();
 	duraion = (double)(finish - start) / CLOCKS_PER_SEC;
 	printf("=> Finished\n");
-	Time_Data[1] = duraion;
+	Time_Data[2] = duraion;
 	fclose(fp);
 	printf("=> Created - quick_sort.out\n");
+	Stable_Data[2] = check_stable(arr);
 }
 void Insert_Sort_Func(element arr[]) {
 	for (int i = 1; i < N; i++) {
@@ -78,7 +164,7 @@ void Insert_Sort_Func(element arr[]) {
 		int j = i-1;
 		for (; j >= 0;j--) {
 			Compare_Data[1]++;
-			if (strcmp(arr[j], key) == 1) {
+			if (strcmp(arr[j].str, key.str) == 1) {
 				arr[j + 1] = arr[j];
 				Swap_Data[1]++;
 			}
@@ -97,7 +183,7 @@ void Insert_Sort(element arr[]){
 
 	Insert_Sort_Func(arr);
 	for (int i = 0; i < N; i++) {
-		fprintf(fp, "%s ", arr[i]);
+		fprintf(fp, "%s ", arr[i].str);
 	}
 
 	finish = clock();
@@ -106,12 +192,13 @@ void Insert_Sort(element arr[]){
 	Time_Data[1] = duraion;
 	fclose(fp);
 	printf("=> Created - insert_sort.out\n");
+	Stable_Data[1] = check_stable(arr);
 }
 void Bubble_Sort_Func(element arr[]) {
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N - i - 1; j++) {
 			Compare_Data[0]++;
-			if (strcmp(arr[j],arr[j+1])==1) {
+			if (strcmp(arr[j].str,arr[j+1].str)==1) {
 				swap(arr[j], arr[j + 1], SWAPTMP);
 				Swap_Data[0]++;
 			}
@@ -127,7 +214,7 @@ void Bubble_Sort(element arr[]) {
 
 	Bubble_Sort_Func(arr);
 	for (int i = 0; i < N; i++) {
-		fprintf(fp, "%s ", arr[i]);
+		fprintf(fp, "%s ", arr[i].str);
 		//printf("%d ", arr[i]);
 	}
 
@@ -137,6 +224,7 @@ void Bubble_Sort(element arr[]) {
 	Time_Data[0] = duraion;
 	fclose(fp);
 	printf("=> Created - bubble_sort.out\n");
+	Stable_Data[0] = check_stable(arr);
 }
 void mk_n_rand(void) {
 	for (int i = 0; i < N; i++) {
@@ -147,7 +235,7 @@ void mk_n_rand(void) {
 void mk_c_rand(void) {
 	for (int i = 0; i < N; i++) {
 		int l = rand() % 20 + 1;
-		randarr[i] = malloc(sizeof(char) * (l + 1));
+		randarr[i].str = malloc(sizeof(char) * (l + 1));
 
 		int j = 0;
 		char tmp[100];
@@ -155,9 +243,19 @@ void mk_c_rand(void) {
 			tmp[j] = rand() % ('z' - 'a'+1) + 'a';
 		}
 		tmp[j] = '\0';
-		strcpy(randarr[i],tmp);
+		strcpy(randarr[i].str,tmp);
+		randarr[i].ind = i;
 	}
 	return;
+}
+int check_stable(element arr[])
+{
+	for (int i = 0; i < N-1; i++) {
+		if (strcmp(arr[i].str, arr[i + 1].str) == 1) {
+			if (arr[i].ind > arr[i + 1].ind)return 0;
+		}
+	}
+	return 1;
 }
 void setting_arr(element x[], element y[]) {
 	for (int i = 0; i < N; i++) x[i] = y[i];
