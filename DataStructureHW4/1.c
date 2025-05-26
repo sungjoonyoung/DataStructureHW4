@@ -87,11 +87,8 @@ void Heap_Sort(element arr[]){
 	Stable_Data[4] = check_stable(arr);
 }
 void Heap_Sort_Func(element arr[]) {
-
 	element heap[N + 1];
 	int ind = 1;
-
-	// Heap insert (Min Heap)
 	for (int i = 0; i < N; i++) {
 		heap[ind] = arr[i];
 		for (int j = ind; j / 2 > 0; j /= 2) {
@@ -101,8 +98,6 @@ void Heap_Sort_Func(element arr[]) {
 		}
 		ind++;
 	}
-
-	// Heap sort (pop min to arr)
 	for (int i = 0; i < N; i++) {
 		arr[i] = heap[1];
 		swap(heap[1], heap[ind - 1], SWAPTMP);
@@ -121,7 +116,6 @@ void Heap_Sort_Func(element arr[]) {
 			else break;
 		}
 	}
-
 }
 void Merge_Sort_Func(element arr[], int l, int r){
 	if (l >= r)return;
