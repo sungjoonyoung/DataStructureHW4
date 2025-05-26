@@ -105,7 +105,10 @@ void mk_n_rand(void) {
 	return;
 }
 void mk_c_rand(void) {
-
+	for (int i = 0; i < N; i++) {
+		int l = rand() % 20 + 1;
+		for(int j=0;j<l;)
+	}
 	return;
 }
 void setting_arr(element x[], element y[]) {
