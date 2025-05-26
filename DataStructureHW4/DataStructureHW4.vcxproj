@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="1.c" />
+    <ClCompile Include="chck.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="bubble_sort.out" />

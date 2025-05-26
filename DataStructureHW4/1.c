@@ -3,7 +3,7 @@
 #include<stdlib.h>
 #include<time.h>
 #include<string.h>
-#define N 10
+#define N 50000
 //#define element char*
 #define swap(x,y,t) ((t)=(x),(x)=(y),(y)=(t))
 typedef struct {
@@ -92,8 +92,11 @@ void Heap_Sort_Func(element arr[]) {
 	for (int i = 0; i < N; i++) {
 		heap[ind] = arr[i];
 		for (int j = ind; j / 2 > 0; j /= 2) {
-			if (strcmp(heap[j].str, heap[j / 2].str) < 0)
+			Compare_Data[4]++;
+			if (strcmp(heap[j].str, heap[j / 2].str) < 0){
 				swap(heap[j], heap[j / 2], SWAPTMP);
+				Swap_Data[4]++;
+			}
 			else break;
 		}
 		ind++;
@@ -101,16 +104,22 @@ void Heap_Sort_Func(element arr[]) {
 	for (int i = 0; i < N; i++) {
 		arr[i] = heap[1];
 		swap(heap[1], heap[ind - 1], SWAPTMP);
+		Compare_Data[4]++;
+		Swap_Data[4]++;
 		ind--;
 
 		int j = 1;
 		while (j * 2 < ind) {
 			int child = j * 2;
-			if (child + 1 < ind && strcmp(heap[child + 1].str, heap[child].str) < 0)
+			if (child + 1 < ind && strcmp(heap[child + 1].str, heap[child].str) < 0) {
+				Compare_Data[4]++;
 				child++;
+			}
 
 			if (strcmp(heap[j].str, heap[child].str) > 0) {
 				swap(heap[j], heap[child], SWAPTMP);
+				Compare_Data[4]++;
+				Swap_Data[4]++;
 				j = child;
 			}
 			else break;
@@ -132,20 +141,28 @@ void Merge_Sort_Func(element arr[], int l, int r){
 
 	while (lower <= mid && upper <= r) {
 		if (strcmp(arr[lower].str, arr[upper].str) <= 0) {
+			Compare_Data[3]++;
+			Swap_Data[3]++;
 			tmp[ind] = arr[lower];
 			lower++;
 		}
 		else {
+			Compare_Data[3]++;
+			Swap_Data[3]++;
 			tmp[ind] = arr[upper];
 			upper++;
 		}
 		ind++;
 	}
 	for (; lower <= mid; lower++) {
+		Compare_Data[3]++;
+		Swap_Data[3]++;
 		tmp[ind] = arr[lower];
 		ind++;
 	}
 	for (; upper <= r; upper++) {
+		Compare_Data[3]++;
+		Swap_Data[3]++;
 		tmp[ind] = arr[upper];
 		ind++;
 	}
@@ -179,14 +196,24 @@ void Quick_Sort_Func(element arr[], int l, int r) {
 	int lower, upper;
 	lower = l;
 	upper = r + 1;
-	do {
+	while (lower < upper) {
 		lower++;
-		while ((lower <= r) && (strcmp(arr[lower].str, arr[l].str) < 0))lower++;
+		while ((lower <= r) && (strcmp(arr[lower].str, arr[l].str) < 0)) {
+			Compare_Data[2]++;
+			lower++;
+		}
 		upper--;
-		while ((upper >= l + 1) && (strcmp(arr[upper].str, arr[l].str) >=0))upper--;
-		if (lower < upper) swap(arr[lower], arr[upper], SWAPTMP);
-	} while (lower < upper);
+		while ((upper >= l + 1) && (strcmp(arr[upper].str, arr[l].str) >= 0)) {
+			Compare_Data[2]++;
+			upper--;
+		}
+		if (lower < upper) {
+			Swap_Data[2]++;
+			swap(arr[lower], arr[upper], SWAPTMP);
+		}
+	}
 	swap(arr[upper], arr[l], SWAPTMP);
+	Swap_Data[2]++;
 	Quick_Sort_Func(arr, l, upper - 1);
 	Quick_Sort_Func(arr, upper + 1, r);
 	return;
