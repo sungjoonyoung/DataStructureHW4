@@ -4,27 +4,25 @@
 #include<time.h>
 #include<string.h>
 #define N 50000
-//#define element char*
 #define swap(x,y,t) ((t)=(x),(x)=(y),(y)=(t))
 typedef struct {
 	char* str;
 	int ind;
 }element;
 element randarr[N];
-element sortarr[N];
 element SWAPTMP;
 
-element tmp[N];
 double Time_Data[5];
 long long Compare_Data[5];
 long long Swap_Data[5];
-char* Name_Data[5] = { "Buuble Sort","Insert Sort","Quick Sort" ,"Merge Sort","Heap Sort" };
+char* Name_Data[5] = { "Bubble Sort","Insert Sort","Quick Sort" ,"Merge Sort","Heap Sort" };
 int Stable_Data[5];
 
 void mk_n_rand(void);
 void mk_c_rand(void);
 int check_stable(element arr[]);
 void setting_arr(element x[], element y[]);
+void Setting_Merge_Sort_Func(element arr[], element tmp[], int l, int r);
 void Bubble_Sort(element arr[]);
 void Bubble_Sort_Func(element arr[]);
 void Insert_Sort(element arr[]);
@@ -32,7 +30,7 @@ void Insert_Sort_Func(element arr[]);
 void Quick_Sort(element arr[]);
 void Quick_Sort_Func(element arr[], int l, int r);
 void Merge_Sort(element arr[]);
-void Merge_Sort_Func(element arr[], int l, int r);
+void Merge_Sort_Func(element arr[], element tmp[], int l, int r);
 void Heap_Sort(element arr[]);
 void Heap_Sort_Func(element arr[]);
 
@@ -40,16 +38,16 @@ int main(void) {
 	srand((unsigned)time(NULL));
 	mk_c_rand();
 	printf("Number of Instances: %d\n", N);
-	setting_arr(sortarr, randarr);
-	Bubble_Sort(sortarr);
-	setting_arr(sortarr, randarr);
-	Insert_Sort(sortarr);
-	setting_arr(sortarr, randarr);
-	Quick_Sort(sortarr);
-	setting_arr(sortarr, randarr);
-	Merge_Sort(sortarr);
-	setting_arr(sortarr, randarr);
-	Heap_Sort(sortarr);
+	setting_arr(randarr, randarr);
+	Bubble_Sort(randarr);
+	setting_arr(randarr, randarr);
+	Insert_Sort(randarr);
+	setting_arr(randarr, randarr);
+	Quick_Sort(randarr);
+	setting_arr(randarr, randarr);
+	Merge_Sort(randarr);
+	setting_arr(randarr, randarr);
+	Heap_Sort(randarr);
 
 
 	printf("====Sorting Result Summary ===\n");
@@ -64,6 +62,8 @@ int main(void) {
 		else printf("|NO\n");
 		//printf("|%s\n", Stable_Data[i]);
 	}
+
+	for (int i = 0; i < N; i++)free(randarr[i].str);
 }
 
 void Heap_Sort(element arr[]){
@@ -126,7 +126,7 @@ void Heap_Sort_Func(element arr[]) {
 		}
 	}
 }
-void Merge_Sort_Func(element arr[], int l, int r){
+void Merge_Sort_Func(element arr[], element tmp[], int l, int r) {
 	if (l >= r)return;
 
 
@@ -135,8 +135,8 @@ void Merge_Sort_Func(element arr[], int l, int r){
 	int mid = (l + r) / 2;
 	int upper = mid + 1;
 
-	Merge_Sort_Func(arr, l, mid);
-	Merge_Sort_Func(arr, mid+1, r);
+	Merge_Sort_Func(arr, tmp, l, mid);
+	Merge_Sort_Func(arr, tmp, mid + 1, r);
 
 
 	while (lower <= mid && upper <= r) {
@@ -177,8 +177,8 @@ void Merge_Sort(element arr[]){
 	clock_t start, finish;
 	double duraion;
 	start = clock();
-
-	Merge_Sort_Func(arr, 0, N - 1);
+	element tmp[N];
+	Merge_Sort_Func(arr, tmp, 0, N - 1);
 	for (int i = 0; i < N; i++) {
 		fprintf(fp, "%s ", arr[i].str);
 	}
@@ -338,5 +338,43 @@ int check_stable(element arr[])
 	return 1;
 }
 void setting_arr(element x[], element y[]) {
-	for (int i = 0; i < N; i++) x[i] = y[i];
+	//for (int i = 0; i < N; i++) x[i] = y[i];
+	element tmp[N];
+	Setting_Merge_Sort_Func(x, tmp, 0, N - 1);
+}
+void Setting_Merge_Sort_Func(element arr[], element tmp[], int l, int r) {
+	if (l >= r)return;
+
+
+	int ind = 0;
+	int lower = l;
+	int mid = (l + r) / 2;
+	int upper = mid + 1;
+
+	Setting_Merge_Sort_Func(arr, tmp, l, mid);
+	Setting_Merge_Sort_Func(arr, tmp, mid + 1, r);
+
+
+	while (lower <= mid && upper <= r) {
+		if (arr[lower].ind< arr[upper].ind) {
+			tmp[ind] = arr[lower];
+			lower++;
+		}
+		else {
+			tmp[ind] = arr[upper];
+			upper++;
+		}
+		ind++;
+	}
+	for (; lower <= mid; lower++) {
+		tmp[ind] = arr[lower];
+		ind++;
+	}
+	for (; upper <= r; upper++) {
+		tmp[ind] = arr[upper];
+		ind++;
+	}
+	for (ind = 0; l + ind <= r; ind++) {
+		arr[l + ind] = tmp[ind];
+	}
 }
